@@ -12,15 +12,15 @@ to run `npm install && npm start` to see the code in the browser.
 
 ## Form State
 
-Let's talk about the `onChange` event we had set up in the initial
-version of our `Form` component. If we look at the original code:
+Let's talk about the `onChange` event we had set up in the initial version of
+our `Form` component. If we look at the original code:
 
 ```jsx
-import React, { useState } from "react";
+import { useState } from "react";
 
 function Form() {
-  const [firstName, setFirstName] = useState("Sylvia");
-  const [lastName, setLastName] = useState("Woods");
+  const [firstName, setFirstName] = useState("Hasung");
+  const [lastName, setLastName] = useState("Kim");
 
   function handleFirstNameChange(event) {
     setFirstName(event.target.value);
@@ -104,8 +104,7 @@ setFormData({
 });
 ```
 
-Now, we just have one object in state to update whenever an input field
-changes.
+Now, we just have one object in state to update whenever an input field changes.
 
 Our change handlers are still a bit verbose, however. Since each one is changing
 a different value in our state, we've got them separated here. You can imagine
@@ -117,7 +116,8 @@ condense this down into one more reusable function. Since `event` is being
 passed in as the argument, we have access to some of the `event.target`
 attributes that may be present.
 
-If we give our inputs `name` attributes, we can access them as `event.target.name`:
+If we give our inputs `name` attributes, we can access them as
+`event.target.name`:
 
 ```jsx
 <input
@@ -156,7 +156,8 @@ is set to `firstName`, while in the second `input`, it is set to `lastName`.
 Each `input`'s `name` attribute will change which part of state is actually
 updated!
 
-Now, if we want to add a new input field to the form, we just need to add two things:
+Now, if we want to add a new input field to the form, we just need to add two
+things:
 
 - a new key/value pair in our `formData` state, and
 - a new `<input>` field where the `name` attribute matches our new key
@@ -169,12 +170,12 @@ the correct value in state.
 Here's what the final version of our `Form` component looks like:
 
 ```jsx
-import React, { useState } from "react";
+import { useState } from "react";
 
 function Form() {
   const [formData, setFormData] = useState({
-    firstName: "Sylvia",
-    lastName: "Woods",
+    firstName: "Hasung",
+    lastName: "Kim",
     admin: false,
   });
 
@@ -234,8 +235,8 @@ with your components.
 ## Conclusion
 
 Working with controlled forms in React involves writing a lot of boilerplate
-code. We can abstract away some of that boilerplate by making our change handling
-logic more abstract.
+code. We can abstract away some of that boilerplate by making our change
+handling logic more abstract.
 
 **Note**: Working with complex forms can get quite challenging! If you're using
 a lot of forms in your application, it's worth checking out some nice React
