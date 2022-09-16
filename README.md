@@ -55,18 +55,18 @@ handlers and the variable names in our JSX accordingly:
 ```jsx
 function Form() {
   const [formData, setFormData] = useState({
-    firstName: "John",
-    lastName: "Henry",
+    firstName: "Hasung",
+    lastName: "Kim",
   });
 
-  function handleFirstNameChange(event) {
+  function handleFirstNameChange(event: React.ChangeEvent<HTMLInputElement>) {
     setFormData({
       ...formData,
       firstName: event.target.value,
     });
   }
 
-  function handleLastNameChange(event) {
+  function handleLastNameChange(event: React.ChangeEvent<HTMLInputElement>) {
     setFormData({
       ...formData,
       lastName: event.target.value,
@@ -138,9 +138,10 @@ As long as the `name` attributes of our `<input>` fields match the keys in our
 state, we can write a generic `handleChange` function like so:
 
 ```js
-function handleChange(event) {
+function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
   // name is the KEY in the formData object we're trying to update
   const name = event.target.name;
+  // value is the same as before, it is the input value given by the user
   const value = event.target.value;
 
   setFormData({
@@ -179,9 +180,9 @@ function Form() {
     admin: false,
   });
 
-  function handleChange(event) {
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const name = event.target.name;
-    let value = event.target.value;
+    let value: string | boolean = event.target.value;
 
     // use `checked` property of checkboxes instead of `value`
     if (event.target.type === "checkbox") {
@@ -194,7 +195,7 @@ function Form() {
     });
   }
 
-  function handleSubmit(event) {
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     console.log(formData);
   }
@@ -231,6 +232,14 @@ Depending on what input elements you're working with, you might also have to add
 some additional logic to handle things like number fields (using `parseInt` or
 `parseFloat`) and other data types to ensure your form state is always in sync
 with your components.
+
+Additionally, notice how we had to specifically type our `value` variable with a
+union type of `string | boolean`. This is because we initialize the `value` with
+`event.target.value` by default, so TypeScript will correctly infer that it is
+of type `string`. This becomes a problem when we want to re-set `value` to equal
+`event.target.checked` if our input turns out to be a checkbox, which holds a
+`boolean` value instead of a `string`. The explicit union type solves this
+problem.
 
 ## Conclusion
 
