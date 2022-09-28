@@ -12,21 +12,21 @@ to run `npm install && npm start` to see the code in the browser.
 
 ## Form State
 
-Let's talk about the `onChange` event we had set up in the initial
-version of our `Form` component. If we look at the original code:
+Let's talk about the `onChange` event we had set up in the initial version of
+our `Form` component. If we look at the original code:
 
 ```jsx
-import React, { useState } from "react";
+import { useState } from "react";
 
 function Form() {
-  const [firstName, setFirstName] = useState("Sylvia");
-  const [lastName, setLastName] = useState("Woods");
+  const [firstName, setFirstName] = useState("Hasung");
+  const [lastName, setLastName] = useState("Kim");
 
-  function handleFirstNameChange(event) {
+  function handleFirstNameChange(event: React.ChangeEvent<HTMLInputElement>) {
     setFirstName(event.target.value);
   }
 
-  function handleLastNameChange(event) {
+  function handleLastNameChange(event: React.ChangeEvent<HTMLInputElement>) {
     setLastName(event.target.value);
   }
 
@@ -55,18 +55,18 @@ handlers and the variable names in our JSX accordingly:
 ```jsx
 function Form() {
   const [formData, setFormData] = useState({
-    firstName: "John",
-    lastName: "Henry",
+    firstName: "Hasung",
+    lastName: "Kim",
   });
 
-  function handleFirstNameChange(event) {
+  function handleFirstNameChange(event: React.ChangeEvent<HTMLInputElement>) {
     setFormData({
       ...formData,
       firstName: event.target.value,
     });
   }
 
-  function handleLastNameChange(event) {
+  function handleLastNameChange(event: React.ChangeEvent<HTMLInputElement>) {
     setFormData({
       ...formData,
       lastName: event.target.value,
@@ -104,8 +104,7 @@ setFormData({
 });
 ```
 
-Now, we just have one object in state to update whenever an input field
-changes.
+Now, we just have one object in state to update whenever an input field changes.
 
 Our change handlers are still a bit verbose, however. Since each one is changing
 a different value in our state, we've got them separated here. You can imagine
@@ -113,11 +112,12 @@ that once we've got a more complicated form, this approach may result in a very
 cluttered component.
 
 Instead of writing separate functions for each input field, we could actually
-condense this down into one more reusable function. Since `event` is being
-passed in as the argument, we have access to some of the `event.target`
-attributes that may be present.
+condense this down into a single, more reusable, function. Since `event` is
+being passed in as the argument, we have access to the `event.target` attributes
+that may be present.
 
-If we give our inputs `name` attributes, we can access them as `event.target.name`:
+If we give our inputs `name` attributes, we can access them as
+`event.target.name`:
 
 ```jsx
 <input
@@ -138,9 +138,10 @@ As long as the `name` attributes of our `<input>` fields match the keys in our
 state, we can write a generic `handleChange` function like so:
 
 ```js
-function handleChange(event) {
+function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
   // name is the KEY in the formData object we're trying to update
   const name = event.target.name;
+  // value is the same as before, it is the input value given by the user
   const value = event.target.value;
 
   setFormData({
@@ -156,7 +157,8 @@ is set to `firstName`, while in the second `input`, it is set to `lastName`.
 Each `input`'s `name` attribute will change which part of state is actually
 updated!
 
-Now, if we want to add a new input field to the form, we just need to add two things:
+Now, if we want to add a new input field to the form, we just need to add two
+things:
 
 - a new key/value pair in our `formData` state, and
 - a new `<input>` field where the `name` attribute matches our new key
@@ -169,18 +171,18 @@ the correct value in state.
 Here's what the final version of our `Form` component looks like:
 
 ```jsx
-import React, { useState } from "react";
+import { useState } from "react";
 
 function Form() {
   const [formData, setFormData] = useState({
-    firstName: "Sylvia",
-    lastName: "Woods",
+    firstName: "Hasung",
+    lastName: "Kim",
     admin: false,
   });
 
-  function handleChange(event) {
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const name = event.target.name;
-    let value = event.target.value;
+    let value: string | boolean = event.target.value;
 
     // use `checked` property of checkboxes instead of `value`
     if (event.target.type === "checkbox") {
@@ -193,7 +195,7 @@ function Form() {
     });
   }
 
-  function handleSubmit(event) {
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     console.log(formData);
   }
@@ -231,11 +233,19 @@ some additional logic to handle things like number fields (using `parseInt` or
 `parseFloat`) and other data types to ensure your form state is always in sync
 with your components.
 
+Additionally, notice how we had to specifically type our `value` variable with a
+union type of `string | boolean`. This is because we initialize the `value` with
+`event.target.value` by default, so TypeScript will correctly infer that it is
+of type `string`. This becomes a problem when we want to re-set `value` to equal
+`event.target.checked` if our input turns out to be a checkbox, which holds a
+`boolean` value instead of a `string`. The explicit union type solves this
+problem.
+
 ## Conclusion
 
 Working with controlled forms in React involves writing a lot of boilerplate
-code. We can abstract away some of that boilerplate by making our change handling
-logic more abstract.
+code. We can abstract away some of that boilerplate by making our change
+handling logic more abstract.
 
 **Note**: Working with complex forms can get quite challenging! If you're using
 a lot of forms in your application, it's worth checking out some nice React
