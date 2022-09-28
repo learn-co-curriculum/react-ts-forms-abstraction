@@ -22,11 +22,11 @@ function Form() {
   const [firstName, setFirstName] = useState("Hasung");
   const [lastName, setLastName] = useState("Kim");
 
-  function handleFirstNameChange(event) {
+  function handleFirstNameChange(event: React.ChangeEvent<HTMLInputElement>) {
     setFirstName(event.target.value);
   }
 
-  function handleLastNameChange(event) {
+  function handleLastNameChange(event: React.ChangeEvent<HTMLInputElement>) {
     setLastName(event.target.value);
   }
 
@@ -112,9 +112,9 @@ that once we've got a more complicated form, this approach may result in a very
 cluttered component.
 
 Instead of writing separate functions for each input field, we could actually
-condense this down into one more reusable function. Since `event` is being
-passed in as the argument, we have access to some of the `event.target`
-attributes that may be present.
+condense this down into a single, more reusable, function. Since `event` is
+being passed in as the argument, we have access to the `event.target` attributes
+that may be present.
 
 If we give our inputs `name` attributes, we can access them as
 `event.target.name`:
